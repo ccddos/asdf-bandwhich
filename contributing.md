@@ -3,9 +3,6 @@
 Testing Locally:
 
 ```shell
-asdf plugin test <plugin-name> <plugin-url> [--asdf-tool-version <version>] [--asdf-plugin-gitref <git-ref>] [test-command*]
-
-# TODO: adapt this
 asdf plugin test bandwhich https://github.com/ccddos/asdf-bandwhich.git "bandwhich --help"
 ```
 
