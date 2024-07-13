@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
-set -e
 
-VERSION=$1
-INSTALL_DIR=$ASDF_INSTALL_PATH
+set -euo pipefail
 
-mkdir -p $INSTALL_DIR
+current_script_path=${BASH_SOURCE[0]}
+plugin_dir=$(dirname "$(dirname "$current_script_path")")
 
-# 下载bandwhich二进制文件
-curl -L "https://github.com/imsnif/bandwhich/releases/download/v${VERSION}/bandwhich-v${VERSION}-x86_64-unknown-linux-musl.tar.gz" -o bandwhich.tar.gz
+# shellcheck source=./lib/utils.bash
+source "${plugin_dir}/lib/utils.bash"
 
-# 解压二进制文件
-tar -xzf bandwhich.tar.gz -C $INSTALL_DIR
+mkdir -p "$ASDF_DOWNLOAD_PATH"
 
-# 清理
-rm bandwhich.tar.gz
+# TODO: Adapt this to proper extension and adapt extracting strategy.
+release_file="$ASDF_DOWNLOAD_PATH/$TOOL_NAME-$ASDF_INSTALL_VERSION.tar.gz"
+
+# Download tar.gz file to the download directory
+download_release "$ASDF_INSTALL_VERSION" "$release_file"
+
+#  Extract contents of tar.gz file into the download directory
+tar -xzf "$release_file" -C "$ASDF_DOWNLOAD_PATH" --strip-components=1 || fail "Could not extract $release_file"
+
+# Remove the tar.gz file since we don't need to keep it
+rm "$release_file"
